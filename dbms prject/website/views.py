@@ -8,9 +8,5 @@ views = Blueprint('views', __name__)
 
 #step 6 start defining our views
 
-@views.route('/')
-@login_required
-def home():
-  return render_template("home.html", user= current_user) # noow we need to register these blueprints in init.py 
 
 

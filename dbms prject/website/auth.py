@@ -6,12 +6,59 @@ from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.orm import joinedload
+from flask_login import current_user
 
 auth = Blueprint('auth', __name__)
 
 @auth.route("/")
+@login_required # FIX 1: ADDED - Ensures current_user is valid before access
 def home():
-    return render_template("home.html")
+    # Fetch all requests made by the current user
+    user_requests = Request.query.filter_by(requester_id=current_user.id).order_by(Request.id.desc()).all()
+    is_donor = current_user.is_donor
+    
+    return render_template("home.html", user=current_user, user_requests=user_requests, is_donor=is_donor)
+
+@auth.route("/remove_donor", methods=['POST'])
+@login_required
+def remove_donor():
+    """Removes the current user's donor profile."""
+    if current_user.is_donor:
+        # Find and delete the donor entry
+        donor_profile = Donor.query.filter_by(user_id=current_user.id).first()
+        if donor_profile:
+            db.session.delete(donor_profile)
+            # Update the user flag
+            current_user.is_donor = False
+            db.session.commit()
+            flash('You have been successfully removed from the donor list.', category='success')
+        else:
+            flash('Error: Donor profile not found.', category='error')
+    else:
+        flash('You are not currently registered as a donor.', category='error')
+        
+    return redirect(url_for('auth.home'))
+
+@auth.route("/close_request/<int:request_id>", methods=['POST'])
+@login_required
+def close_request(request_id):
+    """Changes the status of a specific request to 'Closed'."""
+    # Ensure the request belongs to the current user
+    req = Request.query.filter_by(id=request_id, requester_id=current_user.id).first()
+    
+    if req:
+        # Only allow status change if it's currently 'Pending'
+        if req.status == 'Pending':
+            req.status = 'Closed'
+            db.session.commit()
+            flash(f'Request for {req.patient_name} successfully closed.', category='success')
+        else:
+            flash('This request is already closed.', category='error')
+    else:
+        flash('Request not found or you do not have permission to close it.', category='error')
+        
+    return redirect(url_for('auth.home'))
+
 
 @auth.route("/login", methods=['GET', 'POST'])
 def login():
@@ -24,7 +71,7 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('views.home'))
+                return redirect(url_for('auth.home'))
             else:
                 flash('Incorrect password, try again.', category='error')
         else:
@@ -62,7 +109,7 @@ def signup():
             db.session.commit() 
             flash('Account created!', category='success')
             login_user(new_user, remember=True)
-            return redirect(url_for('views.home'))
+            return redirect(url_for('auth.home'))
     return render_template("signup.html", user=current_user)
 
 

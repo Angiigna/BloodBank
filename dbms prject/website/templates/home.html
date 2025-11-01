@@ -2,6 +2,85 @@
 {% block title %}Home new{% endblock %}
 
 {% block content %}
-<h1>Welcome to the Blood Bank Management System</h1>
-<p>Your one-stop solution for managing blood donations and requests.</p>
+<h1 class="mt-4">Welcome, {{ user.first_name }}!</h1>
+<p class="lead text-muted">Your BloodBank Dashboard</p>
+
+<!-- Feature 1: Donor Status and Removal -->
+<div class="card shadow-sm mb-5">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">Donor Status</h5>
+    </div>
+    <div class="card-body">
+        {% if is_donor %}
+        <p class="card-text fw-bold text-success">
+            You are currently registered as an active blood donor. Thank you for your commitment!
+        </p>
+        <p class="text-muted small">Your profile can be seen by users viewing the donor list.</p>
+        <form method="POST" action="{{ url_for('auth.remove_donor') }}" onsubmit="return confirm('Are you sure you want to remove yourself from the donor list? This cannot be undone.');">
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="fas fa-trash-alt"></i> Remove Me from Donor List
+            </button>
+        </form>
+        {% else %}
+        <p class="card-text text-info">
+            You are not currently registered as a donor. Consider registering to help save lives!
+        </p>
+        <a href="{{ url_for('auth.register_donor') }}" class="btn btn-primary btn-sm">Register as Donor</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Feature 2: Display User's Current Requests -->
+<h2 class="mb-4">Your Recent Blood Requests</h2>
+
+{% if user_requests %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Blood Type</th>
+                <th scope="col">Units</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in user_requests %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ req.patient_name }}</td>
+                <td><span class="badge bg-secondary">{{ req.blood_type_needed }}</span></td>
+                <td>{{ req.units_needed }}</td>
+                <td>{{ req.contact_number }}</td>
+                <td>
+                    {% if req.status == 'Pending' %}
+                        <span class="badge bg-warning text-dark">{{ req.status }}</span>
+                    {% else %}
+                        <span class="badge bg-success">{{ req.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if req.status == 'Pending' %}
+                    <form method="POST" action="{{ url_for('auth.close_request', request_id=req.id) }}" class="d-inline" onsubmit="return confirm('Marking this as Closed means the need has been fulfilled. Are you sure?');">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            Fulfill/Close
+                        </button>
+                    </form>
+                    {% else %}
+                    <button class="btn btn-sm btn-secondary" disabled>Closed</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info" role="alert">
+    You have not made any blood requests yet.
+</div>
+{% endif %}
 {% endblock %} 
