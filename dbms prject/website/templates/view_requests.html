@@ -1,5 +1,45 @@
 {% extends "base.html" %}
 {% block title %}View requests{% endblock %}
 {%block content%}
- <h1>View Requests</h1>
+ <h1 class="mt-4 mb-4">Current Blood Requests</h1>
+
+ {% if requests %}
+ <div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-primary">
+            <tr>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Blood Type Needed</th>
+                <th scope="col">Units Needed</th>
+                <th scope="col">Contact Number</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{ request.patient_name }}</td>
+                <td><span class="badge bg-primary fs-6">{{ request.blood_type_needed }}</span></td>
+                <td>{{ request.units_needed }}</td>
+                <td>{{ request.contact_number }}</td>
+                <td>
+                    {% if request.status == 'Pending' %}
+                    <span class="badge bg-warning text-dark">{{ request.status }}</span>
+                    {% else %}
+                    <span class="badge bg-success">{{ request.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+ </div>
+ {% else %}
+ <div class="alert alert-info" role="alert">
+    No blood requests have been made yet.
+ </div>
+ {% endif %}
+
+ <p class="text-muted mt-3">Please use the contact number provided in the table to reach the requester directly if you can fulfill a need.</p>
+
 {%endblock%}

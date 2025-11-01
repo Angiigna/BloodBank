@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}register donor{% endblock %}
 {%block content%}
- <form method="POST">
+<form method="POST">
   <h3 align="center">Register as a Donor</h3>
   <div class="form-group">
     <label for="name">Full Name</label>
@@ -11,7 +11,10 @@
       id="name"
       name="name"
       placeholder="Enter your full name"
+      disabled 
+      value="{{ user.first_name }}"
     />
+    <small class="form-text text-muted">Your name is automatically pulled from your user profile.</small>
   </div>
   <div class="form-group">
     <label for="age">Age</label>  
@@ -21,26 +24,32 @@
       id="age"
       name="age"
       placeholder="Enter your age"  
+      min="18"
+      required
     />
   </div>
   <div class="form-group">
-    <label for="blood_group">Blood Group</label>
+    <label for="blood_type">Blood Group</label>
+    
     <input
       type="text"
       class="form-control"
-      id="blood_group"
-      name="blood_group"
-      placeholder="Enter your blood group"
+      id="blood_type"
+      name="blood_type"
+      placeholder="Enter your blood group (e.g., O+)"
+      required
     />
     </div>
     <div class="form-group">
-    <label for="contact">Contact Number</label>
+    <label for="contact_number">Contact Number</label>
+
     <input
       type="text"
       class="form-control"
-      id="contact"
-      name="contact"
+      id="contact_number"
+      name="contact_number"
       placeholder="Enter your contact number"
+      required
     />
   </div>
   <br />

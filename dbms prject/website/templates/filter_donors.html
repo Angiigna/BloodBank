@@ -1,5 +1,35 @@
 {% extends "base.html" %}
 {% block title %}Filter Donors{% endblock %}
 {%block content%}
- <h1>Filter Donors</h1>
+ <h1 class="mt-4 mb-4">All Registered Donors</h1>
+
+ {% if donors %}
+ <div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-danger">
+            <tr>
+                <th scope="col">Blood Type</th>
+                <th scope="col">Age</th>
+                <th scope="col">Contact Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for donor in donors %}
+            <tr>
+                <td><span class="badge bg-danger fs-6">{{ donor.blood_type }}</span></td>
+                <td>{{ donor.age }}</td>
+                <td>{{ donor.contact_number }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+ </div>
+ {% else %}
+ <div class="alert alert-info" role="alert">
+    No donors have registered yet.
+ </div>
+ {% endif %}
+
+ <p class="text-muted mt-3">This page displays the contact information of all users who have registered as a donor to facilitate connection for blood requirements.</p>
+
 {%endblock%}
