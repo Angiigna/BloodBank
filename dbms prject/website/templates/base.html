@@ -3,75 +3,258 @@
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
       <title>{% block title %}Home{% endblock %}</title>
+      <!-- Load Tailwind CSS -->
+      <script src="https://cdn.tailwindcss.com"></script>
+      <style>
+          /* Load Inter font and apply to body */
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+          body {
+              font-family: 'Inter', sans-serif;
+              background-color: #f8fafc; /* Lighter background for better contrast */
+          }
+
+          /* Custom link styling for hover effect and clarity */
+          .nav-link-theme {
+              @apply text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-5 py-3 rounded-xl transition-all duration-300 font-medium whitespace-nowrap transform hover:-translate-y-0.5;
+          }
+
+          .nav-link-active {
+              @apply text-blue-600 bg-blue-50 font-semibold border border-blue-200 shadow-sm;
+          }
+
+          /* Custom styling for flash messages */
+          .alert-base {
+              @apply p-4 mb-4 rounded-lg shadow-md;
+          }
+          .alert-error {
+              @apply bg-red-100 text-red-800 border border-red-400;
+          }
+          .alert-success {
+              @apply bg-green-100 text-green-800 border border-green-400;
+          }
+          .alert-close-btn {
+              @apply text-lg font-bold ml-2 leading-none;
+          }
+
+          /* Mobile menu animations */
+          .mobile-menu {
+              transition: all 0.3s ease-in-out;
+          }
+      </style>
     </head>
     <body>
-      <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">BloodBank</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-nav">
-              {%if user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/register_donor">Register donor</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/filter_donors">Filter donor</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/make_request">Make Request</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/view_requests">View requests</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout</a>
-              </li>
-            {% else %}
-              <li class="nav-item">
-                <a class="nav-link"  href="/login">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link"  href="/signup">Sign Up</a>
-              </li>
-              {% endif %}
+      <!-- Enhanced Navbar: Clean white background with blue accents -->
+      <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Brand Name with Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-red-500 to-red-600 p-2 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </div>
+                    <a class="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent hover:from-red-700 hover:to-red-800 transition duration-300" href="/">
+                        BloodBank
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center space-x-3">
+                  {%if user.is_authenticated %}
+                    <a class="nav-link-theme {% if request.path == '/' %}nav-link-active{% endif %}" href="/">
+                      <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Home
+                      </span>
+                    </a>
+                    <a class="nav-link-theme {% if request.path == '/register_donor' %}nav-link-active{% endif %}" href="/register_donor">
+                      <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Register Donor
+                      </span>
+                    </a>
+                    <a class="nav-link-theme {% if request.path == '/filter_donors' %}nav-link-active{% endif %}" href="/filter_donors">
+                      <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        Find Donors
+                      </span>
+                    </a>
+                    <a class="nav-link-theme {% if request.path == '/make_request' %}nav-link-active{% endif %}" href="/make_request">
+                      <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Make Request
+                      </span>
+                    </a>
+                    <a class="nav-link-theme {% if request.path == '/view_requests' %}nav-link-active{% endif %}" href="/view_requests">
+                      <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        View Requests
+                      </span>
+                    </a>
+                    <a class="ml-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl transition-all duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center" href="/logout">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Logout
+                    </a>
+                  {% else %}
+                    <a class="nav-link-theme {% if request.path == '/login' %}nav-link-active{% endif %}" href="/login">
+                      <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        Login
+                      </span>
+                    </a>
+                    <a class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl transition-all duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center" href="/signup">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                      </svg>
+                      Sign Up
+                    </a>
+                  {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="lg:hidden text-gray-600 hover:text-blue-600 focus:outline-none transition duration-300 transform hover:scale-110" type="button" id="mobileMenuButton">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
             </div>
-          </div>
+
+            <!-- Mobile Menu (Hidden by default) -->
+            <div class="lg:hidden mobile-menu hidden border-t border-gray-200 pt-4 pb-6" id="mobileMenu">
+                <div class="flex flex-col space-y-3">
+                  {%if user.is_authenticated %}
+                    <a class="nav-link-theme {% if request.path == '/' %}nav-link-active{% endif %} text-center py-3 flex items-center justify-center" href="/">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                      Home
+                    </a>
+                    <a class="nav-link-theme {% if request.path == '/register_donor' %}nav-link-active{% endif %} text-center py-3 flex items-center justify-center" href="/register_donor">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Register Donor
+                    </a>
+                    <a class="nav-link-theme {% if request.path == '/filter_donors' %}nav-link-active{% endif %} text-center py-3 flex items-center justify-center" href="/filter_donors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      Find Donors
+                    </a>
+                    <a class="nav-link-theme {% if request.path == '/make_request' %}nav-link-active{% endif %} text-center py-3 flex items-center justify-center" href="/make_request">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Make Request
+                    </a>
+                    <a class="nav-link-theme {% if request.path == '/view_requests' %}nav-link-active{% endif %} text-center py-3 flex items-center justify-center" href="/view_requests">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      View Requests
+                    </a>
+                    <a class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-3 rounded-xl transition-all duration-300 font-medium text-center mt-2 shadow-md flex items-center justify-center" href="/logout">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Logout
+                    </a>
+                  {% else %}
+                    <a class="nav-link-theme {% if request.path == '/login' %}nav-link-active{% endif %} text-center py-3 flex items-center justify-center" href="/login">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                      </svg>
+                      Login
+                    </a>
+                    <a class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-3 rounded-xl transition-all duration-300 font-medium text-center mt-2 shadow-md flex items-center justify-center" href="/signup">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                      </svg>
+                      Sign Up
+                    </a>
+                  {% endif %}
+                </div>
+            </div>
         </div>
       </nav>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %} {% for category, message in messages %} {% if category ==
-    'error' %}
-    <div class="alert alert-danger alter-dismissable fade show" role="alert">
-      {{ message }}
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-      </button>
+
+    <!-- Flash Messages Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+      {% with messages = get_flashed_messages(with_categories=true) %} 
+        {% if messages %} 
+          {% for category, message in messages %} 
+            {% if category == 'error' %}
+              <div class="alert-base alert-error flex justify-between items-center" role="alert">
+                <span>{{ message }}</span>
+                <button type="button" class="alert-close-btn hover:text-red-900" onclick="this.parentElement.style.display='none'">
+                  &times;
+                </button>
+              </div>
+            {% else %}
+              <div class="alert-base alert-success flex justify-between items-center" role="alert">
+                <span>{{ message }}</span>
+                <button type="button" class="alert-close-btn hover:text-green-900" onclick="this.parentElement.style.display='none'">
+                  &times;
+                </button>
+              </div>
+            {% endif %} 
+          {% endfor %} 
+        {% endif %} 
+      {% endwith %}
     </div>
-    {% else %}
-    <div class="alert alert-success alter-dismissable fade show" role="alert">
-      {{ message }}
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-      </button>
+
+    <!-- Main Content Block -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {% block content %}
+      {% endblock %}
     </div>
-    {% endif %} {% endfor %} {% endif %} {% endwith %}
-        <div class="container">
-          {% block content %}
-          {% endblock %}
-        </div>
       
+    <!-- Mobile Menu Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    
+                    // Animate hamburger icon
+                    const svg = mobileMenuButton.querySelector('svg');
+                    if (mobileMenu.classList.contains('hidden')) {
+                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+                    } else {
+                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+                    }
+                });
+            }
 
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('nav') && !mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    const svg = mobileMenuButton.querySelector('svg');
+                    svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+                }
+            });
+        });
+    </script>
+
     </body>
-</html> 
-
+</html>

@@ -1,35 +1,252 @@
 {% extends "base.html" %}
-{% block title %}Filter Donors{% endblock %}
-{%block content%}
- <h1 class="mt-4 mb-4">All Registered Donors</h1>
+{% block title %}Find Donors{% endblock %}
 
- {% if donors %}
- <div class="table-responsive">
-    <table class="table table-striped table-hover table-bordered">
-        <thead class="table-danger">
-            <tr>
-                <th scope="col">Blood Type</th>
-                <th scope="col">Age</th>
-                <th scope="col">Contact Number</th>
-            </tr>
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <!-- Hero Section -->
+  <div class="bg-gradient-to-r from-blue-50 to-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+    <div class="flex flex-col md:flex-row items-center justify-between">
+      <div class="md:w-2/3">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3">Find Blood Donors</h1>
+        <p class="text-lg text-gray-600 mb-4">
+          Connect with our community of life-saving donors. Every donor here has volunteered to help those in need.
+        </p>
+        <div class="flex items-center text-sm text-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>All donors are verified and ready to help</span>
+        </div>
+      </div>
+      <div class="md:w-1/3 mt-4 md:mt-0 flex justify-center">
+        <div class="bg-red-100 p-4 rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Donor Count Card -->
+  <div class="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-100 text-center">
+    <div class="text-3xl font-bold text-red-600">{{ donors|length }}</div>
+    <div class="text-lg text-gray-600">Active Donors Ready to Help</div>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <div class="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-200">
+    <div class="flex flex-col md:flex-row gap-4 items-center">
+      <div class="flex-1">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search by blood type, age, or contact..." 
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+        >
+      </div>
+      <div class="flex gap-2">
+        <select id="bloodTypeFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+          <option value="">All Blood Types</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+        <button id="resetFilters" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-200">
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Donors Table -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+      <h2 class="text-xl font-bold text-white">Available Donors</h2>
+      <p class="text-blue-100 text-sm">Contact donors directly for blood requirements</p>
+    </div>
+
+    {% if donors %}
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200" id="donorsTable">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Blood Type
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Age
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Contact Number
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
         </thead>
-        <tbody>
-            {% for donor in donors %}
-            <tr>
-                <td><span class="badge bg-danger fs-6">{{ donor.blood_type }}</span></td>
-                <td>{{ donor.age }}</td>
-                <td>{{ donor.contact_number }}</td>
-            </tr>
-            {% endfor %}
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for donor in donors %}
+          <tr class="hover:bg-gray-50 transition duration-150 donor-row" data-blood-type="{{ donor.blood_type }}" data-age="{{ donor.age }}">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-red-100 text-red-800 border border-red-200">
+                {{ donor.blood_type }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+              {{ donor.age }} years
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 contact-number">
+              {{ donor.contact_number }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <button class="text-blue-600 hover:text-blue-900 mr-3 contact-btn" data-contact="{{ donor.contact_number }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                Call
+              </button>
+              <button class="text-green-600 hover:text-green-900 copy-btn" data-contact="{{ donor.contact_number }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
- </div>
- {% else %}
- <div class="alert alert-info" role="alert">
-    No donors have registered yet.
- </div>
- {% endif %}
+      </table>
+    </div>
 
- <p class="text-muted mt-3">This page displays the contact information of all users who have registered as a donor to facilitate connection for blood requirements.</p>
+    <!-- Table Info -->
+    <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
+      <p class="text-sm text-gray-600">
+        Showing <span id="visibleCount">{{ donors|length }}</span> of {{ donors|length }} donors
+      </p>
+    </div>
 
-{%endblock%}
+    {% else %}
+    <div class="px-6 py-12 text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+      </svg>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No donors available</h3>
+      <p class="text-gray-500 mb-4">Be the first to register as a donor and help save lives.</p>
+      <a href="/register_donor" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 transition duration-300">
+        Become a Donor
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Information Section -->
+  <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+    <h3 class="text-lg font-semibold text-blue-800 mb-3">Important Information</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-700">
+      <div class="flex items-start">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Always verify donor availability before proceeding with blood collection</span>
+      </div>
+      <div class="flex items-start">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Follow proper medical protocols for blood transfusion</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Enhanced Functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchInput');
+  const bloodTypeFilter = document.getElementById('bloodTypeFilter');
+  const resetFilters = document.getElementById('resetFilters');
+  const donorRows = document.querySelectorAll('.donor-row');
+  const visibleCount = document.getElementById('visibleCount');
+
+  function filterDonors() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const bloodType = bloodTypeFilter.value;
+    let visible = 0;
+
+    donorRows.forEach(row => {
+      const bloodTypeData = row.getAttribute('data-blood-type');
+      const age = row.getAttribute('data-age');
+      const contactElement = row.querySelector('.contact-number');
+      const contact = contactElement ? contactElement.textContent.toLowerCase() : '';
+      const rowText = row.textContent.toLowerCase();
+
+      const matchesSearch = searchTerm === '' || 
+                           bloodTypeData.toLowerCase().includes(searchTerm) ||
+                           age.includes(searchTerm) ||
+                           contact.includes(searchTerm) ||
+                           rowText.includes(searchTerm);
+      
+      const matchesBloodType = bloodType === '' || bloodTypeData === bloodType;
+
+      if (matchesSearch && matchesBloodType) {
+        row.style.display = '';
+        visible++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    if (visibleCount) {
+      visibleCount.textContent = visible;
+    }
+  }
+
+  // Event Listeners
+  searchInput.addEventListener('input', filterDonors);
+  bloodTypeFilter.addEventListener('change', filterDonors);
+  
+  resetFilters.addEventListener('click', function() {
+    searchInput.value = '';
+    bloodTypeFilter.value = '';
+    filterDonors();
+  });
+
+  // Copy contact number functionality
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const contact = this.getAttribute('data-contact');
+      navigator.clipboard.writeText(contact).then(() => {
+        const originalText = this.innerHTML;
+        this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied';
+        this.classList.remove('text-green-600', 'hover:text-green-900');
+        this.classList.add('text-green-700');
+        
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.classList.remove('text-green-700');
+          this.classList.add('text-green-600', 'hover:text-green-900');
+        }, 2000);
+      }).catch(() => {
+        alert('Failed to copy contact number. Please copy manually.');
+      });
+    });
+  });
+
+  // Contact button functionality
+  document.querySelectorAll('.contact-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const contact = this.getAttribute('data-contact');
+      if (confirm(`Call donor at ${contact}?`)) {
+        window.location.href = `tel:${contact}`;
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

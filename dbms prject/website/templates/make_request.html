@@ -1,51 +1,244 @@
 {% extends "base.html" %}
 {% block title %}Make Request{% endblock %}
-{%block content%}
- <form method="POST">
-  <h3 align="center">Make a Blood Request</h3>
-  <div class="form-group">
-    <label for="patient_name">Patient Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="patient_name"
-      name="patient_name"
-      placeholder="Enter patient's full name"
-    />
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <!-- Hero Section -->
+  <div class="bg-gradient-to-r from-blue-50 to-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+    <div class="flex items-center mb-4">
+      <div class="bg-red-100 p-3 rounded-lg mr-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">Request Blood</h1>
+        <p class="text-gray-600 mt-2">Submit a blood request to connect with our donor community. Help is just a form away.</p>
+      </div>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="blood_type_needed">Blood Group Required</label>
-    <input
-      type="text"
-      class="form-control"
-      id="blood_type_needed"
-      name="blood_type_needed"
-      placeholder="Enter required blood group (e.g., A+, O-)"
-    />
+
+  <!-- Quick Stats -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white rounded-lg shadow-sm p-4 text-center border border-gray-100">
+      <div class="text-2xl font-bold text-red-600">24/7</div>
+      <div class="text-sm text-gray-600">Emergency Support</div>
+    </div>
+    <div class="bg-white rounded-lg shadow-sm p-4 text-center border border-gray-100">
+      <div class="text-2xl font-bold text-red-600">Quick</div>
+      <div class="text-sm text-gray-600">Donor Response</div>
+    </div>
+    <div class="bg-white rounded-lg shadow-sm p-4 text-center border border-gray-100">
+      <div class="text-2xl font-bold text-red-600">Verified</div>
+      <div class="text-sm text-gray-600">Donor Network</div>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="units_needed">Number of Units</label>
-    <input
-      type="number"
-      class="form-control"
-      id="units_needed"
-      name="units_needed"
-      placeholder="Enter number of units needed"
-      min="1"
-    />
+
+  <!-- Request Form -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+      <h2 class="text-2xl font-bold text-white">Blood Request Form</h2>
+      <p class="text-blue-100">Fill in the details to get help from our donor community</p>
+    </div>
+    
+    <form method="POST" class="p-6 space-y-6">
+      <!-- Patient Name Field -->
+      <div>
+        <label for="patient_name" class="block text-sm font-medium text-gray-700 mb-2">
+          Patient Name
+          <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+          id="patient_name"
+          name="patient_name"
+          placeholder="Enter patient's full name"
+          required
+        />
+        <p class="mt-1 text-sm text-gray-500">Full name of the person who needs blood</p>
+      </div>
+
+      <!-- Blood Type Required Field -->
+      <div>
+        <label for="blood_type_needed" class="block text-sm font-medium text-gray-700 mb-2">
+          Blood Group Required
+          <span class="text-red-500">*</span>
+        </label>
+        <select
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+          id="blood_type_needed"
+          name="blood_type_needed"
+          required
+        >
+          <option value="">Select required blood type</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+          <option value="Any">Any Compatible Type</option>
+        </select>
+        <p class="mt-1 text-sm text-gray-500">Select the specific blood type needed</p>
+      </div>
+
+      <!-- Units Needed Field -->
+      <div>
+        <label for="units_needed" class="block text-sm font-medium text-gray-700 mb-2">
+          Number of Units
+          <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="number"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+          id="units_needed"
+          name="units_needed"
+          placeholder="Enter number of units needed"
+          min="1"
+          max="10"
+          required
+        />
+        <p class="mt-1 text-sm text-gray-500">Typically 1 unit = 450ml of blood</p>
+      </div>
+
+      <!-- Contact Information Field -->
+      <div>
+        <label for="contact_number" class="block text-sm font-medium text-gray-700 mb-2">
+          Contact Information
+          <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="tel"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+          id="contact_number"
+          name="contact_number"
+          placeholder="Enter your contact phone number"
+          required
+        />
+        <p class="mt-1 text-sm text-gray-500">Donors will contact you on this number</p>
+      </div>
+
+      <!-- Additional Notes Field -->
+      <div>
+        <label for="urgency" class="block text-sm font-medium text-gray-700 mb-2">
+          Urgency Level
+        </label>
+        <select
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+          id="urgency"
+          name="urgency"
+        >
+          <option value="Normal">Normal - Within 48 hours</option>
+          <option value="Urgent">Urgent - Within 24 hours</option>
+          <option value="Emergency">Emergency - Immediate need</option>
+        </select>
+        <p class="mt-1 text-sm text-gray-500">Help us prioritize your request</p>
+      </div>
+
+      <!-- Hospital Information (Optional) -->
+      <div>
+        <label for="hospital" class="block text-sm font-medium text-gray-700 mb-2">
+          Hospital Name (Optional)
+        </label>
+        <input
+          type="text"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+          id="hospital"
+          name="hospital"
+          placeholder="Enter hospital name if applicable"
+        />
+      </div>
+
+      <!-- Important Notice -->
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+        <div class="flex items-start">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 mt-1 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h4 class="font-semibold text-blue-800">Important Notice</h4>
+            <p class="text-blue-700 text-sm mt-1">
+              Your request will be visible to all registered donors. Please ensure contact information is accurate. 
+              For emergency situations, also contact local blood banks directly.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="pt-4">
+        <button 
+          type="submit" 
+          class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+        >
+          <div class="flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Submit Blood Request
+          </div>
+        </button>
+      </div>
+    </form>
   </div>
-  <div class="form-group">
-    <label for="contact_number">Contact Information</label>
-    <input
-      type="text"
-      class="form-control"
-      id="contact_number"
-      name="contact_number"
-      placeholder="Enter your contact phone number"
-    />
+
+  <!-- Next Steps Information -->
+  <div class="mt-8 bg-green-50 border border-green-200 rounded-xl p-6">
+    <h3 class="text-lg font-semibold text-green-800 mb-3">What Happens Next?</h3>
+    <div class="space-y-3 text-sm text-green-700">
+      <div class="flex items-start">
+        <div class="bg-green-100 rounded-full p-1 mr-3 mt-0.5 flex-shrink-0">
+          <span class="text-green-800 font-bold text-xs w-4 h-4 flex items-center justify-center">1</span>
+        </div>
+        <span>Your request will be immediately visible to all registered donors</span>
+      </div>
+      <div class="flex items-start">
+        <div class="bg-green-100 rounded-full p-1 mr-3 mt-0.5 flex-shrink-0">
+          <span class="text-green-800 font-bold text-xs w-4 h-4 flex items-center justify-center">2</span>
+        </div>
+        <span>Compatible donors will contact you directly on the provided number</span>
+      </div>
+      <div class="flex items-start">
+        <div class="bg-green-100 rounded-full p-1 mr-3 mt-0.5 flex-shrink-0">
+          <span class="text-green-800 font-bold text-xs w-4 h-4 flex items-center justify-center">3</span>
+        </div>
+        <span>You can track and manage your requests from your dashboard</span>
+      </div>
+    </div>
   </div>
-  <br />
-  <button type="submit" class="btn btn-primary">Submit Request</button>
-  </form>
-  
-{%endblock%}
+
+  <!-- Emergency Contact -->
+  <div class="mt-6 text-center text-gray-600">
+    <p class="text-sm">
+      <span class="font-semibold">Emergency?</span> Call our 24/7 helpline at 
+      <a href="tel:+1800BLOODBANK" class="text-red-600 hover:text-red-800 font-medium">+1-800-BLOODBANK</a>
+    </p>
+  </div>
+</div>
+
+<!-- Optional JavaScript for enhanced UX -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add real-time validation if needed
+  const unitsInput = document.getElementById('units_needed');
+  if (unitsInput) {
+    unitsInput.addEventListener('change', function() {
+      if (this.value > 10) {
+        alert('For large quantity requests, please contact us directly for special arrangements.');
+      }
+    });
+  }
+
+  // Add character counter for patient name
+  const patientName = document.getElementById('patient_name');
+  if (patientName) {
+    patientName.addEventListener('input', function() {
+      // Optional: Add character limit validation
+    });
+  }
+});
+</script>
+{% endblock %}
