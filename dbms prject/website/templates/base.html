@@ -4,17 +4,17 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>{% block title %}Home{% endblock %}</title>
-      <!-- Load Tailwind CSS -->
+    
       <script src="https://cdn.tailwindcss.com"></script>
       <style>
-          /* Load Inter font and apply to body */
+          
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
           body {
               font-family: 'Inter', sans-serif;
-              background-color: #f8fafc; /* Lighter background for better contrast */
+              background-color: #f8fafc; 
           }
 
-          /* Custom link styling for hover effect and clarity */
+          
           .nav-link-theme {
               @apply text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-5 py-3 rounded-xl transition-all duration-300 font-medium whitespace-nowrap transform hover:-translate-y-0.5;
           }
@@ -23,7 +23,6 @@
               @apply text-blue-600 bg-blue-50 font-semibold border border-blue-200 shadow-sm;
           }
 
-          /* Custom styling for flash messages */
           .alert-base {
               @apply p-4 mb-4 rounded-lg shadow-md;
           }
@@ -37,18 +36,18 @@
               @apply text-lg font-bold ml-2 leading-none;
           }
 
-          /* Mobile menu animations */
+    
           .mobile-menu {
               transition: all 0.3s ease-in-out;
           }
       </style>
     </head>
     <body>
-      <!-- Enhanced Navbar: Clean white background with blue accents -->
+
       <nav class="bg-white shadow-lg border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <!-- Brand Name with Logo -->
+
                 <div class="flex items-center space-x-3">
                     <div class="bg-gradient-to-r from-red-500 to-red-600 p-2 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,7 +59,7 @@
                     </a>
                 </div>
 
-                <!-- Desktop Navigation -->
+
                 <div class="hidden lg:flex items-center space-x-3">
                   {%if user.is_authenticated %}
                     <a class="nav-link-theme {% if request.path == '/' %}nav-link-active{% endif %}" href="/">
@@ -127,7 +126,7 @@
                   {% endif %}
                 </div>
 
-                <!-- Mobile Menu Button -->
+  
                 <button class="lg:hidden text-gray-600 hover:text-blue-600 focus:outline-none transition duration-300 transform hover:scale-110" type="button" id="mobileMenuButton">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -135,7 +134,7 @@
                 </button>
             </div>
 
-            <!-- Mobile Menu (Hidden by default) -->
+  
             <div class="lg:hidden mobile-menu hidden border-t border-gray-200 pt-4 pb-6" id="mobileMenu">
                 <div class="flex flex-col space-y-3">
                   {%if user.is_authenticated %}
@@ -194,7 +193,7 @@
         </div>
       </nav>
 
-    <!-- Flash Messages Section -->
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
       {% with messages = get_flashed_messages(with_categories=true) %} 
         {% if messages %} 
@@ -219,13 +218,13 @@
       {% endwith %}
     </div>
 
-    <!-- Main Content Block -->
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {% block content %}
       {% endblock %}
     </div>
       
-    <!-- Mobile Menu Script -->
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuButton = document.getElementById('mobileMenuButton');
@@ -235,7 +234,7 @@
                 mobileMenuButton.addEventListener('click', function() {
                     mobileMenu.classList.toggle('hidden');
                     
-                    // Animate hamburger icon
+
                     const svg = mobileMenuButton.querySelector('svg');
                     if (mobileMenu.classList.contains('hidden')) {
                         svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
@@ -245,7 +244,7 @@
                 });
             }
 
-            // Close mobile menu when clicking outside
+
             document.addEventListener('click', function(event) {
                 if (!event.target.closest('nav') && !mobileMenu.classList.contains('hidden')) {
                     mobileMenu.classList.add('hidden');

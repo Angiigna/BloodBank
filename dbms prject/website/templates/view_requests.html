@@ -168,6 +168,18 @@
                 </svg>
                 Copy
               </button>
+            <form method="POST" action="{{ url_for('auth.accept_donation') }}" class="inline-block">
+                <input type="hidden" name="request_id" value="{{ request.id }}">
+                <button 
+                    type="submit"
+                    class="text-pink-600 hover:text-green-900 accept-btn" 
+                    onclick="this.disabled=true; this.form.submit(); this.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' class=\'h-5 w-5 inline\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M4 4v5h.582m15.356 2A8.91 8.91 0 0112 21a9 9 0 01-7.768-4.502M19.582 9H15m1.52-2.316l-1.464 1.465m.002 4.697l-1.465-1.464m4.237 2.122l-1.464 1.465m-2.124 0l-1.465-1.464M18.364 5.636l-1.464 1.464M5.636 18.364l1.464-1.464M18 9h4m-4 0v4m-2-4h-4m2-2v4m-2 2h-4m2-2v4m-4-2h-4m2-2v4' />' Processing...';"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Accept
+                </button>
             </td>
           </tr>
           {% endfor %}
@@ -227,6 +239,7 @@
 
 <!-- JavaScript for Enhanced Functionality -->
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
   const searchInput = document.getElementById('searchInput');
   const statusFilter = document.getElementById('statusFilter');

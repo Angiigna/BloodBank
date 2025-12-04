@@ -1,7 +1,8 @@
 # step 5 Now add the blueprints for auth also
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import User, Donor, Request
+from datetime import date 
+from .models import User, Donor, Request, DonationInteraction
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
@@ -11,9 +12,9 @@ from flask_login import current_user
 auth = Blueprint('auth', __name__)
 
 @auth.route("/")
-@login_required # FIX 1: ADDED - Ensures current_user is valid before access
+@login_required 
 def home():
-    # Fetch all requests made by the current user
+
     user_requests = Request.query.filter_by(requester_id=current_user.id).order_by(Request.id.desc()).all()
     is_donor = current_user.is_donor
     
@@ -120,6 +121,7 @@ def register_donor():
         blood_type = request.form.get('blood_type')
         age_str = request.form.get('age')
         contact_number = request.form.get('contact_number')
+        city = request.form.get('city')
 
         try:
             age = int(age_str)
@@ -128,7 +130,7 @@ def register_donor():
             return render_template("register_donor.html", user=current_user)
 
         if not current_user.is_donor:
-            new_donor = Donor(user_id=current_user.id, blood_type=blood_type, age=age, contact_number=contact_number)
+            new_donor = Donor(user_id=current_user.id, blood_type=blood_type, age=age, contact_number=contact_number, city=city, last_donation_date=None)
             current_user.is_donor = True
             db.session.add(new_donor)
             db.session.commit()
@@ -168,6 +170,7 @@ def make_request():
         blood_type_needed = request.form.get('blood_type_needed')
         units_needed_str = request.form.get('units_needed') 
         contact_number = request.form.get('contact_number')
+        city = request.form.get('city')
 
         try:
             units_needed = int(units_needed_str)
@@ -179,9 +182,73 @@ def make_request():
             flash('Please fill out all required fields for the request.', category='error')
             return render_template("make_request.html" ,user = current_user)
 
-        new_request = Request(requester_id=current_user.id, patient_name=patient_name, blood_type_needed=blood_type_needed, units_needed=units_needed,contact_number=contact_number)
+        new_request = Request(requester_id=current_user.id, patient_name=patient_name, blood_type_needed=blood_type_needed, units_needed=units_needed,contact_number=contact_number, city=city)
         db.session.add(new_request)
         db.session.commit()
         flash('Your blood request has been submitted!', category='success')
         return redirect(url_for('auth.view_requests'))
     return render_template("make_request.html" ,user = current_user)
+
+
+@auth.route("/accept_donation", methods= ['POST'])
+@login_required
+def accept_donation():
+    """
+    Handles standard POST from the 'Accept' button:
+    1. Records a new DonationInteraction.
+    2. Updates the Donor's last_donation_date to today's date.
+    3. Uses flash messages and redirects.
+    """
+    # *** CHANGE: Get data from request.form instead of request.get_json() ***
+    request_id = request.form.get('request_id')
+
+    if not request_id:
+        flash("Missing request ID.", category='error')
+        return redirect(url_for('auth.view_requests'))
+
+    try:
+        request_id = int(request_id)
+    except (TypeError, ValueError):
+        flash("Invalid request ID.", category='error')
+        return redirect(url_for('auth.view_requests'))
+
+    req = Request.query.get(request_id)
+    if not req:
+        flash("Request not found.", category='error')
+        return redirect(url_for('auth.view_requests'))
+
+    # Ensure the current user is registered as a donor and get their profile
+    donor_profile = Donor.query.filter_by(user_id=current_user.id).first()
+    if not donor_profile:
+        flash("You must be registered as a donor to accept a request.", category='error')
+        return redirect(url_for('auth.register_donor'))
+    
+    try:
+        # 1. Record the new DonationInteraction
+        new_interaction = DonationInteraction(
+            donor_id=donor_profile.id, 
+            request_id=req.id, 
+            interaction_date=date.today(), # Use datetime.date.today()
+            status='Accepted'
+        )
+        db.session.add(new_interaction)
+
+        # 2. Update the Donor's last_donation_date (as requested)
+        donor_profile.last_donation_date = date.today()
+        # 2.5 Update the Request status to reflect acceptance
+        req.status = 'Accepted'
+        
+        db.session.commit()
+
+        
+        
+        # 3. Respond with flash and redirect
+        flash(f"Donation accepted for {req.patient_name}. Your last donation date has been updated.", category='success')
+        return redirect(url_for('auth.view_requests'))
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error accepting donation request: {e}")
+        flash("An unexpected server error occurred while processing your request.", category='error')
+        return redirect(url_for('auth.view_requests'))
+    

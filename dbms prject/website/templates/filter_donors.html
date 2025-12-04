@@ -165,7 +165,7 @@
   </div>
 </div>
 
-<!-- JavaScript for Enhanced Functionality -->
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const searchInput = document.getElementById('searchInput');
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Event Listeners
+
   searchInput.addEventListener('input', filterDonors);
   bloodTypeFilter.addEventListener('change', filterDonors);
   
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
     filterDonors();
   });
 
-  // Copy contact number functionality
+
   document.querySelectorAll('.copy-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const contact = this.getAttribute('data-contact');
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Contact button functionality
+
   document.querySelectorAll('.contact-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const contact = this.getAttribute('data-contact');

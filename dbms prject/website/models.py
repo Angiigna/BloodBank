@@ -1,6 +1,6 @@
 from.import db
 from flask_login import UserMixin
-from sqlalchemy.sql import func
+# from sqlalchemy.sql import func
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,6 +17,8 @@ class Donor(db.Model):
     blood_type = db.Column(db.String(10))
     age = db.Column(db.Integer)
     contact_number = db.Column(db.String(15))
+    last_donation_date = db.Column(db.Date)
+    city = db.Column(db.String(100))
 
 class Request(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -26,3 +28,11 @@ class Request(db.Model):
     units_needed = db.Column(db.Integer)
     contact_number = db.Column(db.String(15))
     status = db.Column(db.String(50), default='Pending')
+    city = db.Column(db.String(100))
+
+class DonationInteraction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    donor_id = db.Column(db.Integer, db.ForeignKey('donor.id'))
+    request_id = db.Column(db.Integer, db.ForeignKey('request.id'))
+    interaction_date = db.Column(db.Date)
+    status = db.Column(db.String(50))
