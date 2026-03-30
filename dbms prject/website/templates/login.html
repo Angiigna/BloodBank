@@ -151,4 +151,16 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<script src="/bot script/ProjectFolder/Collector/sdk.js"></script>
+<script>
+  const tracker = new BotTracker({
+    endpoint: "http://127.0.0.1:8000/collect"
+  });
+
+  tracker.init();
+  tracker.setupListeners();
+</script>
+
+
 {% endblock %}
